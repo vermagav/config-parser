@@ -2,7 +2,7 @@
 
 ### Description
 
-This is a configuration file parser written in C++.
+This is an INI configuration file parser written in C++ as part of a 24 hour hack session.
 
 ### Parsing Flow
 
@@ -29,7 +29,24 @@ Assumptions made during parsing can be found in comments placed in [parser.h](co
 
 #### [config::Handler](config/handler.h)
 
-TODO
+This is the only class that users should touch to load and use a config file. As a trade off against memory and in favor of fast access, two maps are used to fetch both individual settings as well as a map of all settings for a section in O(1) time (most of the time, not considering rare, worst cases due to `unordered_map` collisions).
+
+As seen in [main.cc](main.cc), typical usage is as follows:
+
+```c++
+// Get a config handler
+config::Handler handler;
+
+// Load a config file
+handler.Load("sample.ini", {"production", "ubuntu"});
+
+// Output some settings to standard output
+config::Item* setting;
+setting = handler.Get("common.paid_users_size_limit");
+std::cout << setting->GetInteger();
+```
+
+Swap out the sample ini file for different test files to see various results.
 
 ### How to use
 
@@ -53,4 +70,21 @@ Please see the [Makefile](Makefile) for details. The command-line compiler `g++`
 
 ### External Libraries
 
-I use the lest unit testing library for C++, taken from [github.com/martinmoene/lest](https://github.com/martinmoene/lest). This framework was included as a single header file under [/common/lest.hpp](common/lest.hpp).
+I use the lest unit testing library for C++, taken from [github.com/martinmoene/lest](https://github.com/martinmoene/lest). This framework was included as a single header file and can be found at [common/lest.hpp](common/lest.hpp).
+
+### Future Improvements
+
+Here are some improvements I thought about but did not have time to implement due to the 24 hour time constraint:
+
+* Reload functionality
+  - Check for changes in a file on disk (which could be updated via Zookeeper on a server)
+  - Load file when changes are detected, flushing old map after successful reload
+* Limit the size of the ini file
+  - As of now, there is no upper bound on how large the input file should be
+  - The parser will continue to load new lines in memory until it runs out of memory, at which point the process will either be terminated (depening on OOM policies on the machine), or the OS will start paging to disk, slowing down the load tremendously.
+* Limit the size of each line in the ini file
+  - As of now, a line could be of an unbounded length
+  - Same issues as above
+* Add additional validation to key and value strings
+  - See [this comment](config/parser.cc#L164)
+
