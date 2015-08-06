@@ -31,27 +31,27 @@ struct SingleSetting {
 class Parser {
 	public:
 		// Parse a file's contents into a vector of strings for each line.
-    vector<string> ParseFile(string);
+		vector<string> ParseFile(string);
 
-    // Replace a bad character with a good one, expressed as UTF escaped strings.
-    // Ref: http://stackoverflow.com/questions/17389487/c-how-to-replace-unusual-quotes-in-code
-    void ReplaceChar(string&, const string&, const string&);
+		// Replace a bad character with a good one, expressed as UTF escaped strings.
+		// Ref: http://stackoverflow.com/questions/17389487/c-how-to-replace-unusual-quotes-in-code
+		void ReplaceChar(string&, const string&, const string&);
 
-    // Strip string of comments and spaces (except when in quotes).
-    string StripLine(string);
+		// Strip string of comments and spaces (except when in quotes).
+		string StripLine(string);
 
-    // Check if a stipped line is a section header.
-    bool IsValidSection(string);
+		// Check if a stipped line is a section header.
+		bool IsValidSection(string);
 
 		// Extract the section string from a valid section line.
 		string ParseSection(string);
 
-    // Parse a stripped line into a SingleSetting object. This is the main
+		// Parse a stripped line into a SingleSetting object. This is the main
 		// function responsible for parsing all of the different variations of
 		// a setting: key, override, and value. For valid settings, the function
 		// inherits the section that is passed in. Note that the SingleSetting
 		// struct object contains all string members.
-    SingleSetting ParseSetting(string, string);
+		SingleSetting ParseSetting(string, string);
 
 		// Parse a validated value into an Item object. This function is
 		// responsible for converting the value string into one of the supported

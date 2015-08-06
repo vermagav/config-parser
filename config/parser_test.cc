@@ -9,60 +9,60 @@ const lest::test specification[] = {
 		config::Parser parser;
 
 		// Remove whitespaces
-    EXPECT(parser.StripLine("") == "");
-    EXPECT(parser.StripLine("path = /tmp/") == "path=/tmp/");
-    EXPECT(parser.StripLine("path<production> = /srv/var/tmp/") == "path<production>=/srv/var/tmp/");
-    EXPECT(parser.StripLine("basic_size_limit = 26214400") == "basic_size_limit=26214400");
+		EXPECT(parser.StripLine("") == "");
+		EXPECT(parser.StripLine("path = /tmp/") == "path=/tmp/");
+		EXPECT(parser.StripLine("path<production> = /srv/var/tmp/") == "path<production>=/srv/var/tmp/");
+		EXPECT(parser.StripLine("basic_size_limit = 26214400") == "basic_size_limit=26214400");
 
-    // ... except when whitespace is inside quotes (only double-quotes are considered quotes)
-    EXPECT(parser.StripLine("name = \"hello there, ftp uploading\"") == "name=\"hello there, ftp uploading\"");
-    EXPECT(parser.StripLine("name = \"http uploading\"") == "name=\"http uploading\"");
+		// ... except when whitespace is inside quotes (only double-quotes are considered quotes)
+		EXPECT(parser.StripLine("name = \"hello there, ftp uploading\"") == "name=\"hello there, ftp uploading\"");
+		EXPECT(parser.StripLine("name = \"http uploading\"") == "name=\"http uploading\"");
 
-    // Handle weird, non-standard quote marks
-    EXPECT(parser.StripLine("name = “hello there, ftp uploading”") == "name=\"hello there, ftp uploading\"");
-    EXPECT(parser.StripLine("name = “http uploading”") == "name=\"http uploading\"");
+		// Handle weird, non-standard quote marks
+		EXPECT(parser.StripLine("name = “hello there, ftp uploading”") == "name=\"hello there, ftp uploading\"");
+		EXPECT(parser.StripLine("name = “http uploading”") == "name=\"http uploading\"");
 
-    // Remove comments
-    EXPECT(parser.StripLine("; This is a comment") == "");
-    EXPECT(parser.StripLine("path<staging> = /srv/uploads/; This is another comment") == "path<staging>=/srv/uploads/");
-    EXPECT(parser.StripLine("[http]; This is a comment") == "[http]");
+		// Remove comments
+		EXPECT(parser.StripLine("; This is a comment") == "");
+		EXPECT(parser.StripLine("path<staging> = /srv/uploads/; This is another comment") == "path<staging>=/srv/uploads/");
+		EXPECT(parser.StripLine("[http]; This is a comment") == "[http]");
 
-    // Allow the comment delimiter ';' inside a quoted value, but strip outer comments
-    EXPECT(parser.StripLine("foobar=\"forever;alone\"; This is a comment") == "foobar=\"forever;alone\"");
+		// Allow the comment delimiter ';' inside a quoted value, but strip outer comments
+		EXPECT(parser.StripLine("foobar=\"forever;alone\"; This is a comment") == "foobar=\"forever;alone\"");
 	},
 
 	CASE("IsValidSection correctly validates sections") {
 		config::Parser parser;
 
 		// All kinds of accepted section header strings
-    EXPECT(parser.IsValidSection("[common]") == true);
-    EXPECT(parser.IsValidSection("[http-common_123]") == true);
-    EXPECT(parser.IsValidSection("[a]") == true);
-    EXPECT(parser.IsValidSection("[1]") == true);
-    EXPECT(parser.IsValidSection("[-1]") == true);
-    EXPECT(parser.IsValidSection("[-]") == true);
-    EXPECT(parser.IsValidSection("[_]") == true);
+		EXPECT(parser.IsValidSection("[common]") == true);
+		EXPECT(parser.IsValidSection("[http-common_123]") == true);
+		EXPECT(parser.IsValidSection("[a]") == true);
+		EXPECT(parser.IsValidSection("[1]") == true);
+		EXPECT(parser.IsValidSection("[-1]") == true);
+		EXPECT(parser.IsValidSection("[-]") == true);
+		EXPECT(parser.IsValidSection("[_]") == true);
 
-    // No spaces allowed; this function expects stripped input
-    EXPECT(parser.IsValidSection(" [common]") == false);
-    EXPECT(parser.IsValidSection("[common] ") == false);
-    EXPECT(parser.IsValidSection("[foo bar]") == false);
+		// No spaces allowed; this function expects stripped input
+		EXPECT(parser.IsValidSection(" [common]") == false);
+		EXPECT(parser.IsValidSection("[common] ") == false);
+		EXPECT(parser.IsValidSection("[foo bar]") == false);
 
-    // No comments; this function expects stripped input
-    EXPECT(parser.IsValidSection("[common];foobar") == false);
-    EXPECT(parser.IsValidSection("[common] ;foobar") == false);
+		// No comments; this function expects stripped input
+		EXPECT(parser.IsValidSection("[common];foobar") == false);
+		EXPECT(parser.IsValidSection("[common] ;foobar") == false);
 
-    // Whole string is comment
-    EXPECT(parser.IsValidSection(";foobar [common]") == false);
+		// Whole string is comment
+		EXPECT(parser.IsValidSection(";foobar [common]") == false);
 
-    // Must have something in between square brackets
-    EXPECT(parser.IsValidSection("[]") == false);
+		// Must have something in between square brackets
+		EXPECT(parser.IsValidSection("[]") == false);
 	},
 
 	CASE("ParseSection correctly extracts section name") {
 		config::Parser parser;
 
-    EXPECT(parser.ParseSection("[common]") == "common");
+		EXPECT(parser.ParseSection("[common]") == "common");
 		EXPECT(parser.ParseSection("[http]") == "http");
 		EXPECT(parser.ParseSection("[http-common_123]") == "http-common_123");
 		EXPECT(parser.ParseSection("[-]") == "-");
@@ -175,37 +175,37 @@ const lest::test specification[] = {
 		stringValue = "26214400";
 		integerValue = 26214400;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::INTEGER);
+		EXPECT(item.GetValueType() == config::ValueType::INTEGER);
 		EXPECT(item.GetInteger() == integerValue);
 
 		stringValue = "52428800";
 		integerValue = 52428800;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::INTEGER);
+		EXPECT(item.GetValueType() == config::ValueType::INTEGER);
 		EXPECT(item.GetInteger() == integerValue);
 
 		stringValue = "2147483648";
 		integerValue = 2147483648;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::INTEGER);
+		EXPECT(item.GetValueType() == config::ValueType::INTEGER);
 		EXPECT(item.GetInteger() == integerValue);
 
 		stringValue = "-2147483648";
 		integerValue = -2147483648;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::INTEGER);
+		EXPECT(item.GetValueType() == config::ValueType::INTEGER);
 		EXPECT(item.GetInteger() == integerValue);
 
 		stringValue = "0";
 		integerValue = 0;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::INTEGER);
+		EXPECT(item.GetValueType() == config::ValueType::INTEGER);
 		EXPECT(item.GetInteger() == integerValue);
 
 		stringValue = "1";
 		integerValue = 1;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::INTEGER);
+		EXPECT(item.GetValueType() == config::ValueType::INTEGER);
 		EXPECT(item.GetInteger() == integerValue);
 
 		// Test 64-bit int overflow throws runtime exception
@@ -217,57 +217,57 @@ const lest::test specification[] = {
 		stringValue = "3.14";
 		doubleValue = 3.14;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::DOUBLE);
+		EXPECT(item.GetValueType() == config::ValueType::DOUBLE);
 		EXPECT(item.GetDouble() == doubleValue);
 
 		stringValue = "-3.14";
 		doubleValue = -3.14;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::DOUBLE);
+		EXPECT(item.GetValueType() == config::ValueType::DOUBLE);
 		EXPECT(item.GetDouble() == doubleValue);
 
 		stringValue = "0.0";
 		doubleValue = 0.0;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::DOUBLE);
+		EXPECT(item.GetValueType() == config::ValueType::DOUBLE);
 		EXPECT(item.GetDouble() == doubleValue);
 
 		// Test booleans
 		stringValue = "true";
 		boolValue = true;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::BOOLEAN);
+		EXPECT(item.GetValueType() == config::ValueType::BOOLEAN);
 		EXPECT(item.GetBoolean() == boolValue);
 
 		stringValue = "false";
 		boolValue = false;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::BOOLEAN);
+		EXPECT(item.GetValueType() == config::ValueType::BOOLEAN);
 		EXPECT(item.GetBoolean() == boolValue);
 
 		stringValue = "yes";
 		boolValue = true;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::BOOLEAN);
+		EXPECT(item.GetValueType() == config::ValueType::BOOLEAN);
 		EXPECT(item.GetBoolean() == boolValue);
 
 		stringValue = "no";
 		boolValue = false;
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::BOOLEAN);
+		EXPECT(item.GetValueType() == config::ValueType::BOOLEAN);
 		EXPECT(item.GetBoolean() == boolValue);
 
 		// Test lists
 		stringValue = "array,of,values";
 		listValue = {"array", "of", "values"};
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::LIST);
+		EXPECT(item.GetValueType() == config::ValueType::LIST);
 		EXPECT(item.GetList() == listValue);
 
 		// Test strings
 		stringValue = "/srv/var/tmp/";
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::STRING);
+		EXPECT(item.GetValueType() == config::ValueType::STRING);
 		EXPECT(item.GetString() == stringValue);
 
 		// A quoted string should strip quotes, and not convert to list
@@ -275,7 +275,7 @@ const lest::test specification[] = {
 		stringValue = "\"hello there, ftp uploading\"";
 		std::string strippedStringValue = "hello there, ftp uploading";
 		item = parser.ConstructValueObject(stringValue);
-    EXPECT(item.GetValueType() == config::ValueType::STRING);
+		EXPECT(item.GetValueType() == config::ValueType::STRING);
 		EXPECT(item.GetString() == strippedStringValue);
 	},
 };
