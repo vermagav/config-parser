@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+bin/config_parser
+bin/item_test
+bin/parser_test
+
