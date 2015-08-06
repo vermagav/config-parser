@@ -117,4 +117,4 @@ Here are some improvements I thought about but did not have time to implement du
   - Same issues as above
 * Add additional validation to key and value strings
   - See [this comment](config/parser.cc#L164)
-
+* Turn `config::Handler` into a singleton class
