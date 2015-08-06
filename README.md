@@ -67,6 +67,36 @@ Please see the [Makefile](Makefile) for details. The command-line compiler `g++`
 * Clean executables:
 
   `make clean`
+  
+#### Example:
+
+```text
+gverma at ubuntu in ~/Code/config-parser on master
+$ make run
+g++ -Wall -Wno-unused-variable -std=c++11 main.cc config/handler.cc config/item.cc config/parser.cc -o bin/config_parser
+./bin/config_parser
+
+
+Test print directly: 2147483648
+[INT]:	2147483648
+[STR]:	hello there, ftp uploading
+[LIST]:	{ array, of, values }
+[NONE]:	Setting not found.
+[BOOL]:	0
+[STR]:	/etc/var/uploads
+
+
+Printing ALL keys and values via GetSection():
+[KEY]:	path:
+[STR]:	/srv/var/tmp/
+[KEY]:	paid_users_size_limit:
+[INT]:	2147483648
+[KEY]:	student_size_limit:
+[INT]:	52428800
+[KEY]:	basic_size_limit:
+[INT]:	26214400
+
+```
 
 ### External Libraries
 
