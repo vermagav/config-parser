@@ -40,15 +40,16 @@ void printSetting(config::Item* setting) {
 }
 
 int main() {
-	// Get a config handler
-	config::Handler handler;
-
-	// Load a config file
-	handler.Load("sample.ini", {"production", "ubuntu"});
-
-	// Output some settings to standard output
-	config::Item* setting;
 	try {
+		// Get a config handler
+		config::Handler handler;
+
+		// Load a config file
+		handler.Load("sample.ini", {"production", "ubuntu"});
+
+		// Output some settings to standard output
+		config::Item* setting;
+
 		setting = handler.Get("common.paid_users_size_limit");
 		std::cout << "\n\nTest print directly: " << setting->GetInteger() << "\n";
 
