@@ -12,7 +12,7 @@ The source code should be fairly self-explanatory; descriptive comments are rest
 
 One of the first challenges with the requirements of this project pertain to the strongly-typed nature of my language of choice. Containers must always contain, and functions must return objects of the same type. Maps do not support heterogeneous types out of the box, and there are several ways to overcome this problem: base classes with Templates<T> and using third-party options such as [Boost::any](http://www.boost.org/doc/libs/1_58_0/doc/html/any.html). For the scope of this exercise, I settled for the generic approach: find a base type that is compatible with all other required types, and build a robust API that provides both type-safety as well as minimal risk to the end-user. Since C++ does not have Java's Object type (and don't even consider using `void*`), I settled for `std::string`.
 
-The `config::Item` class is responsible for holding a single setting and provided gated access to its value with the correct type. By design, it restricts access to the type that was assigned to it by the Parser's state machine. The unit tests found in [item_test.cc](config/item_test.cc) assert that the correct types are always accessible, and asserts that a specific exception is thrown when trying to access an invalid type. The caller is expected to `try-catch` the call.
+The `config::Item` class is responsible for holding a single setting and provides gated access to its value with a set type. By design, it restricts access to the type that was assigned to it by the Parser's state machine. The unit tests found in [item_test.cc](config/item_test.cc) assert that the correct types are always accessible, and asserts that a specific exception is thrown when trying to access an invalid type. The caller is expected to `try-catch` the call.
 
 #### [config::Parser](config/parser.h)
 
@@ -100,7 +100,7 @@ Printing ALL keys and values via GetSection():
 
 ### External Libraries
 
-I use the lest unit testing library for C++, taken from [github.com/martinmoene/lest](https://github.com/martinmoene/lest). This framework was included as a single header file and can be found at [common/lest.hpp](common/lest.hpp).
+I use the lest unit unit-test framework for C++, taken from [github.com/martinmoene/lest](https://github.com/martinmoene/lest). This framework was included as a single header file and can be found at [common/lest.hpp](common/lest.hpp).
 
 ### Future Improvements
 
